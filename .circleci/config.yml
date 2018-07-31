@@ -1,0 +1,82 @@
+version: 2
+
+ruby_machine: &ruby_machine
+  working_directory: ~/pairguru
+  docker:
+    - image: circleci/ruby:2.3.3-node-browsers
+      environment:
+        RAILS_ENV: test
+        CIRCLE_ARTIFACTS: /tmp/circleci-artifacts
+
+jobs:
+  checkout_code:
+    <<: *ruby_machine
+    steps:
+      - checkout
+      - persist_to_workspace:
+          root: ~/pairguru
+          paths:
+            - .
+
+  bundle_ruby:
+    <<: *ruby_machine
+    steps:
+      - attach_workspace:
+          at: ~/pairguru
+      - restore-cache:
+          key: gems-{{ checksum "Gemfile.lock" }}
+      - run: bundle install --path vendor/bundle --with test
+      - save-cache:
+          key: gems-{{ checksum "Gemfile.lock" }}
+          paths:
+            - ~/pairguru/vendor/bundle
+      - persist_to_workspace:
+          root: ~/pairguru
+          paths:
+            - .
+
+  run_test_rspec:
+    <<: *ruby_machine
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/pairguru
+      - restore-cache:
+          key: gems-{{ checksum "Gemfile.lock" }}
+      - run:
+          name: bundle config
+          command: bundle config --local path ~/pairguru/vendor/bundle
+      - run:
+          name: Copy database.yml
+          command: cp config/database.yml.ci config/database.yml
+      - run:
+          name: Create DB
+          command: bundle exec rake db:schema:load --trace
+      - run:
+          name: Make dirs
+          command: mkdir /tmp/circleci-test-results
+      - run:
+          name: Run unit tests
+          command:
+            bundle exec rspec --color --require spec_helper spec --format progress
+#      - run:
+#          name: Avoid hosts unknown for github
+#          command: mkdir ~/.ssh/ && echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
+      - run: if [[ $CIRCLE_BRANCH != *"solution"* ]] ; then git push git@github.com:netguru-training/pairguru.git $CIRCLE_BRANCH -f ; fi
+      - store_test_results:
+          path: /tmp/circleci-test-results
+    # Save artifacts
+      - store_artifacts:
+          path: /tmp/circleci-test-results
+
+workflows:
+  version: 2
+  pairguru:
+    jobs:
+      - checkout_code
+      - bundle_ruby:
+          requires:
+            - checkout_code
+      - run_test_rspec:
+          requires:
+              - bundle_ruby

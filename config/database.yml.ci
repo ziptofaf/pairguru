@@ -1,0 +1,7 @@
+test:
+  database: pairguru_test
+  adapter: sqlite3
+  pool: 5
+  timeout: 5000
+  username: ubuntu
+  host: localhost
