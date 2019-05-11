@@ -13,3 +13,9 @@
               = link_to movie.genre.name, movies_genre_path(movie.genre)
             = ' (' + movie.released_at.to_s + ')'
           %p= movie.description
+        %td
+          %p= movie.api_data[:plot]
+        %td
+          %p= movie.api_data[:rating]
+        %td
+          %p= image_tag movie.api_data[:poster_url]

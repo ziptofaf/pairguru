@@ -17,5 +17,5 @@
 
 # Ignore vendor directory.
 /vendor
-
+/.idea
 coverage
