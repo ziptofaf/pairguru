@@ -14,7 +14,9 @@
 
 class Movie < ApplicationRecord
   belongs_to :genre
+  has_many :comments, dependent: :destroy
 
+  # pulls additional information about a given movie from external API
   def api_data
     begin
       @api_data ||= API::Movie.new(title).to_hash
@@ -23,5 +25,6 @@ class Movie < ApplicationRecord
     end
     @api_data
   end
+
 
 end
