@@ -1,0 +1,11 @@
+%table.table.table-striped
+  %tbody
+    - @comments.each_with_index do |comment, i|
+      %tr
+      %td= i + 1
+      %td= comment.user.name
+      %td= comment.content
+      %td
+        - if comment.user_id == current_user.id
+          = link_to 'Delete comment', comment_path(comment), method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-xs btn-danger btn-block'
+
