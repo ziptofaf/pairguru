@@ -3,7 +3,11 @@ Rails.application.routes.draw do
 
   root "home#welcome"
 
-  resources :comments, only: [:create, :destroy]
+  resources :comments, only: [:create, :destroy] do
+    collection do
+      get :top_commenters
+    end
+  end
   resources :genres, only: :index do
     member do
       get "movies"

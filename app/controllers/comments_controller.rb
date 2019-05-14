@@ -1,5 +1,9 @@
 class CommentsController < ApplicationController
 
+  def top_commenters
+    @commenters = User.top_commenters
+  end
+
   def create
     comment = Comment.new(comments_params)
     comment.user = current_user

@@ -1,0 +1,8 @@
+.row
+  .col-md-8.col-md-offset-2.col-lg-8.col-lg-offset-2
+    %h1.text-center Top commenters this week
+    %table.table.table-striped
+      - @commenters.each do |commenter|
+        %tr
+          %td= commenter.name
+
