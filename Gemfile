@@ -2,6 +2,7 @@ source "https://rubygems.org"
 
 gem "rails", "5.2"
 
+gem "active_model_serializers"
 gem "annotate"
 gem "bootstrap-sass"
 gem "devise"
@@ -10,8 +11,8 @@ gem "haml-rails"
 gem "jquery-rails"
 gem "sass-rails"
 gem "sqlite3"
+gem "rest-client"
 gem "uglifier"
-gem 'rest-client'
 
 # Reduces boot times through caching; required in config/boot.rb
 gem "bootsnap", ">= 1.1.0", require: false
@@ -31,6 +32,7 @@ group :development, :test do
   gem "capybara"
   gem "factory_bot_rails"
   gem "faker"
+  gem "fakeweb", git: "https://github.com/chrisk/fakeweb.git", require: false
   gem "listen"
   gem "rspec-rails"
   gem "rubocop"
