@@ -22,5 +22,6 @@ class Movie < ApplicationRecord
       @api_data ||= { title: title, plot: "Currently unavailable", rating: nil, poster_url: "" }
     end
     @api_data
-    end
+  end
+
 end
